@@ -1,0 +1,26 @@
+{
+  "name": "eslint-import-resolver-react-native",
+  "version": "0.0.1",
+  "description": "eslint-plugin-import resolver for react-native that tries to resolve .ios.js and .android.js imports",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LeadingLight/eslint-import-resolver-react-native.git"
+  },
+  "keywords": [
+    "eslint",
+    "eslint-import-resolver"
+  ],
+  "author": "Pontus Rulander <pontus@iruhl.org> (https://github.com/LeadingLight)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/LeadingLight/eslint-import-resolver-react-native/issues"
+  },
+  "homepage": "https://github.com/LeadingLight/eslint-import-resolver-react-native#readme",
+  "dependencies": {
+    "eslint-import-resolver-node": "^0.2.3"
+  }
+}
