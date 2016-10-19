@@ -21,14 +21,14 @@ npm i eslint-import-resolver-react-native --save-dev
 }
 ```
 
-## options
+## Options
 
-platform: 'both' || 'ios' || 'android' || 'any'
+platform: 'both' || 'ios' || 'android' || 'any'  
 default = 'both'
 
-'both'    - .ios and .android file needs to be pressent to resolve
-'any'     - .ios and/or .android file needs to be pressent to resolve
-'ios'     - only looks for .ios files
+'both'    - .ios and .android file needs to be pressent to resolve  
+'any'     - .ios and/or .android file needs to be pressent to resolve  
+'ios'     - only looks for .ios files  
 'android' - only looks for .android files
 ```
 {
