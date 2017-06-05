@@ -32,7 +32,6 @@ function isImage(source) {
 }
 
 function checkImages(source, file, config) {
-  console.log ('is image')
   if (isImage(source)) {
     var splitSource = source.split('.');
     var noSuffix = splitSource.slice(0, -1).join('.');
