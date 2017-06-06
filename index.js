@@ -5,6 +5,7 @@ exports.resolve = resolve;
 // Setting
 // platform: 'both' || 'ios' || 'android' || 'any'
 // default = 'both'
+var imageSuffixes = [ '.png', '.jpg', '.gif', '.jpeg' ];
 
 function resolve(source, file, config) {
   let resolve = nodeResolve(source, file, config);
@@ -20,9 +21,44 @@ function resolve(source, file, config) {
   return specific(source, file, config, platform);
 }
 
+function isImage(source) {
+  var imageFound = false;
+  imageSuffixes.forEach(function(suffix) {
+    if (source.endsWith(suffix)) {
+      imageFound = true;
+    }
+  })
+  return imageFound;
+}
+
+function checkImages(source, file, config) {
+  if (isImage(source)) {
+    var splitSource = source.split('.');
+    var noSuffix = splitSource.slice(0, -1).join('.');
+    var suffix = '.' + splitSource.slice(-1);
+    const img1 = nodeResolve(noSuffix + '@1x' + suffix, file, config);
+    const img2 = nodeResolve(noSuffix + '@1.5' + suffix, file, config);
+    const img3 = nodeResolve(noSuffix + '@2x' + suffix, file, config);
+    const img4 = nodeResolve(noSuffix + '@3x' + suffix, file, config);
+    const img5 = nodeResolve(noSuffix + '@3.5x' + suffix , file, config);
+
+    if (img1.found) return img1;
+    if (img2.found) return img2;
+    if (img3.found) return img3;
+    if (img4.found) return img4;
+    if (img5.found) return img5;
+
+    return {found: false};
+  }
+}
 
 function both(source, file, config) {
+  if (isImage(source)) {
+    return checkImages(source, file, config);
+  }
+
   const ios = nodeResolve(source+'.ios', file, config);
+
   if (!ios.found) return {found: false};
 
   const android = nodeResolve(source+'.android', file, config);
@@ -32,6 +68,10 @@ function both(source, file, config) {
 }
 
 function any(source, file, config) {
+  if (isImage(source)) {
+    return checkImages(source, file, config);
+  }
+
   const ios = nodeResolve(source+'.ios', file, config);
   if (ios.found) return ios;
 
