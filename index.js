@@ -6,10 +6,16 @@ exports.resolve = resolve;
 // platform: 'both' || 'ios' || 'android' || 'any'
 // default = 'both'
 var imageSuffixes = [ '.png', '.jpg', '.gif', '.jpeg' ];
+var sizeSuffixes = ['@1x', '@1.5x', '@2x', '@3x', '@3.5x'];
 
 function resolve(source, file, config) {
   let resolve = nodeResolve(source, file, config);
   if (resolve.found) return resolve;
+
+  if (isImage(source)) {
+    resolve = checkImages(source, file, config);
+    if (resolve.found) return resolve;
+  }
 
   config = config || {};
   const platform = config.platform || 'both';
@@ -31,51 +37,46 @@ function isImage(source) {
   return imageFound;
 }
 
-function checkImages(source, file, config) {
+function checkImages(source, file, config, platform=null) {
+  var splitSource = source.split('.');
+  var noSuffix = splitSource.slice(0, -1).join('.');
+  var suffix = '.' + splitSource.slice(-1);
+  var platformPart = (platform === null ? '' : `.${platform}`);
+
+  for(sizeSuffix of ['', ...sizeSuffixes]) {
+    const pathToTry = `${noSuffix}${sizeSuffix}${platformPart}${suffix}`;
+    const image = nodeResolve(pathToTry, file, config);
+    if(image.found) {
+      return image
+    }
+  }
+  return {found: false};
+}
+
+function resolvePlatform(source, file, config, platform) {
   if (isImage(source)) {
-    var splitSource = source.split('.');
-    var noSuffix = splitSource.slice(0, -1).join('.');
-    var suffix = '.' + splitSource.slice(-1);
-    const img1 = nodeResolve(noSuffix + '@1x' + suffix, file, config);
-    const img2 = nodeResolve(noSuffix + '@1.5' + suffix, file, config);
-    const img3 = nodeResolve(noSuffix + '@2x' + suffix, file, config);
-    const img4 = nodeResolve(noSuffix + '@3x' + suffix, file, config);
-    const img5 = nodeResolve(noSuffix + '@3.5x' + suffix , file, config);
-
-    if (img1.found) return img1;
-    if (img2.found) return img2;
-    if (img3.found) return img3;
-    if (img4.found) return img4;
-    if (img5.found) return img5;
-
-    return {found: false};
+    return checkImages(source, file, config, platform);
+  }
+  else {
+    return nodeResolve(source + '.' + platform, file, config);
   }
 }
 
 function both(source, file, config) {
-  if (isImage(source)) {
-    return checkImages(source, file, config);
-  }
-
-  const ios = nodeResolve(source+'.ios', file, config);
-
+  const ios = resolvePlatform(source, file, config, 'ios');
   if (!ios.found) return {found: false};
 
-  const android = nodeResolve(source+'.android', file, config);
+  const android = resolvePlatform(source, file, config, 'android');
   if (!android.found) return {found: false};
 
   return ios;
 }
 
 function any(source, file, config) {
-  if (isImage(source)) {
-    return checkImages(source, file, config);
-  }
-
-  const ios = nodeResolve(source+'.ios', file, config);
+  const ios = resolvePlatform(source, file, config, 'ios');
   if (ios.found) return ios;
 
-  const android = nodeResolve(source+'.android', file, config);
+  const android = resolvePlatform(source, file, config, 'android');
   if (android.found) return android;
 
   // no platform file found
@@ -83,5 +84,5 @@ function any(source, file, config) {
 }
 
 function specific(source, file, config, platform) {
-  return nodeResolve(source + '.' + platform, file, config);
+  return resolvePlatform(source, file, config, platform);
 }
