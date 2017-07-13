@@ -4,7 +4,7 @@
   "description": "eslint-plugin-import resolver for react-native that tries to resolve .ios.js and .android.js imports",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha --compilers js:babel-register"
   },
   "repository": {
     "type": "git",
@@ -22,5 +22,10 @@
   "homepage": "https://github.com/LeadingLight/eslint-import-resolver-react-native#readme",
   "dependencies": {
     "eslint-import-resolver-node": "^0.2.3"
+  },
+  "devDependencies": {
+    "babel-preset-react-native": "^2.1.0",
+    "babel-register": "^6.24.1",
+    "mocha": "^3.4.2"
   }
 }
