@@ -1,6 +1,11 @@
 # eslint-import-resolver-react-native
-eslint-plugin-import resolver for react-native that tries to resolve .ios.js and .android.js if import is not resolved
+eslint-plugin-import resolver for react-native that tries to resolve .ios.js and .android.js if import is not resolved, and also checks for @image extensions
 
+Ex:
+- table.ios.js
+- table.ios.gif
+- table@3.5x.gif
+- table@3.5x.ios.gif
 
 ##Install
 
