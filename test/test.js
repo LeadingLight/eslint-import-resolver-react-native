@@ -78,6 +78,23 @@ const baseTest = (path, extension) => {
 
 describe('JS files', function() {
   baseTest('js', '');
+
+  describe('index file in directory, both platforms', function() {
+    const config = {platform: 'both'};
+
+    it('should return success when both platforms files are found', function() {
+      const result = resolve('./js/dirByIndex', FILE, config);
+      assert.equal(true, result.found);
+      assertIsValidPath(result.path);
+    });
+
+    it('should return false when any of the platforms files isn\'t found', function() {
+      let result = resolve('./js/dirByIndexFail1', FILE, config);
+      assert.equal(false, result.found);
+      result = resolve('./js/dirByIndexFail2', FILE, config);
+      assert.equal(false, result.found);
+    });
+  });
 });
 
 describe('Image files', function() {
