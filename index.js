@@ -1,3 +1,4 @@
+const path = require('path');
 const nodeResolve = require( 'eslint-import-resolver-node').resolve;
 exports.interfaceVersion = 2;
 exports.resolve = resolve;
@@ -17,6 +18,15 @@ function resolve(source, file, config) {
     if (resolve.found) return resolve;
   }
 
+  // first try to resolve path as file, then as index in directory, as bundler does
+  resolve = resolveByPlatform(source, file, config);
+  if (resolve.found) return resolve;
+
+  // not `path.join` because it loses leading `./`
+  return resolveByPlatform(source + path.sep + 'index', file, config);
+}
+
+function resolveByPlatform(source, file, config) {
   config = config || {};
   const platform = config.platform || 'both';
 
