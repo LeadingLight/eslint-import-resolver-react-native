@@ -73,6 +73,10 @@ function resolvePlatform(source, file, config, platform) {
 }
 
 function both(source, file, config) {
+  // `native` counts as both ios and android.
+  const native = resolvePlatform(source, file, config, 'native');
+  if (native.found) return {found: true};
+
   const ios = resolvePlatform(source, file, config, 'ios');
   if (!ios.found) return {found: false};
 
@@ -88,6 +92,9 @@ function any(source, file, config) {
 
   const android = resolvePlatform(source, file, config, 'android');
   if (android.found) return android;
+
+  const native = resolvePlatform(source, file, config, 'native');
+  if (native.found) return native;
 
   // no platform file found
   return {found: false};
